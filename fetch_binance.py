@@ -1,4 +1,3 @@
-
 import sqlite3
 import requests
 import logging_handler
@@ -23,10 +22,10 @@ def setup_mysql(logger):
         logger.info('CONNECTION SUCCESS')
 
         cur = connection.cursor()
-        cur.execute('''create table if not exists transaction_records
+        cur.execute('''Create table if not exists transaction_records
                     (id integer primary key autoincrement, 
-                    price_avg real,
-                    price_sum real, 
+                    price_avg float,
+                    price_sum float, 
                     time datetime default current_timestamp)   
                     ''')
 
@@ -34,12 +33,16 @@ def setup_mysql(logger):
         return connection
     except NameError:
         logger.error(NameError)
-
     pass
 
+def calculation(arr):
+    summary = sum(arr)
+    avg = summary / len(arr)
+    return summary, avg
+    
 if __name__ == '__main__':
     logger = logging_handler.setup_logging()
-    conn = setup_mysql(logger=logger)
+    connection = setup_mysql(logger=logger)
 
     response = fetch_binance()
     try:
@@ -49,12 +52,11 @@ if __name__ == '__main__':
         arr = [float(v['adv']['price']) for v in data]
 
         # calculation
-        price_sum = sum(arr)
-        price_avg = price_sum / len(arr)
+        price_sum, price_avg = calculation(arr)
 
-        conn.execute(
-            "insert into transaction_records(price_avg, price_sum) values (?,?)", (price_avg, price_sum))
-        conn.commit()
+        connection.execute(
+            "Insert into transaction_records(price_avg, price_sum) values (?,?)", (price_avg, price_sum))
+        connection.commit()
     except NameError:
         logger.error(response)
     pass

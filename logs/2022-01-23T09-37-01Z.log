@@ -1,0 +1,3 @@
+2022-01-23 09:37:01,554 | INFO | CONNECTION SUCCESS
+2022-01-23 09:37:01,559 | INFO | <built-in method commit of sqlite3.Connection object at 0x7ff1083593f0>
+2022-01-23 09:37:02,007 | INFO | <Response [200]>
